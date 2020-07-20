@@ -1,0 +1,142 @@
+import { Router } from 'express';
+import Product from '../models/Product';
+import Extra from '../models/Extra';
+import CreateProductService from '../services/admin/CreateProductService';
+import ChangeProductService from '../services/admin/ChangeProductService';
+import DeleteProductService from '../services/admin/DeleteProductService';
+import CreateExtraService from '../services/admin/CreateExtraService';
+import DeleteExtraService from '../services/admin/DeleteExtraService';
+import ShowProductsService from '../services/shared/ShowProductsService';
+import ShowExtraService from '../services/shared/ShowExtraService';
+import ShowUserService from '../services/admin/ShowUserService';
+import DeleteUserService from '../services/admin/DeleteUserService';
+
+import multer from 'multer';
+import uploadConfig from '../config/upolad';
+
+const adminRouter = Router();
+const upload = multer(uploadConfig);
+
+adminRouter.post('/product', upload.single('product'), async (request, response) => {
+    try{
+        const data: Omit<Product,'id'> = request.body;
+        data.photo = request.file.path;
+        const createProduct = new CreateProductService();
+        
+        const product = await createProduct.execute(data);
+    
+        return response.send(product);
+    } catch ( err ){
+        return response.status(400).json({error: err.message});
+    }
+});
+
+adminRouter.get('/product', async (request, response) => {
+    try {
+        const showProducts = new ShowProductsService();
+
+        const products = await showProducts.execute();
+    
+        return response.send(products);
+    } catch ( err ) {
+        return response.status(400).json({error: err.message});
+    }
+});
+
+adminRouter.put('/product', async (request, response) => {
+    try { 
+        const data: Product = request.body;
+
+        const changedProduct = new ChangeProductService();
+    
+        await changedProduct.execute(data);
+    
+        return response.status(200).json({ message: 'Produto editado com sucesso'});
+    } catch ( err ) {
+        return response.status(400).json({ error: err.message });
+    }
+
+});
+
+adminRouter.delete('/product', async (request,response) => {
+    try {
+        const id = request.body;
+
+        const deleteProduct = new DeleteProductService();
+    
+        await deleteProduct.execute(id);
+
+        return response.status(200).json({message: 'Produto deletado'});
+    } catch ( err ) {
+        return response.status(400).send({error: err.message});
+    }
+});
+
+adminRouter.post('/extra', async (request, response) => {
+    try {
+        const data: Omit<Extra, 'id'> = request.body;
+    
+        const createExtra = new CreateExtraService();
+    
+        const extra = await createExtra.execute(data);
+    
+        return response.send(extra);
+    } catch ( err ) {
+        return response.status(400).json({ error: err.message });
+    }
+    
+});
+
+adminRouter.get('/extra', async (request, response) => {
+    try{
+        const showExtras = new ShowExtraService();
+
+        const extras = await showExtras.execute()
+
+        return response.send(extras);
+
+    } catch ( err ) {
+        return response.status(400).json({ err: err.message });
+    }
+});
+
+adminRouter.delete('/extra', async (request,response) => {
+    try {
+        const id = request.body;
+
+        const deleteExtra = new DeleteExtraService();
+
+        await deleteExtra.execute(id);
+
+        return response.status(200).json({message: 'Produto deletado'});
+    } catch ( err ) {
+        return response.status(400).json({ error: err.message });
+    }
+});
+
+adminRouter.get('/users', async (request, response) => {
+    try {
+        const createUser = new ShowUserService();
+        const users = await createUser.execute();
+
+        return response.send(users);
+    } catch ( err ) {
+        return response.json({ err: err.message })
+    }
+
+});
+
+adminRouter.delete('/users', async (request,response) => {
+    try {
+        const data = request.body;
+        const deleteUser = new DeleteUserService()
+        await deleteUser.execute(data);
+
+        return response.send({message: 'Usuário deletado com sucesso!'})
+
+    } catch ( err ) {
+        return response.status(400).json({ err: err.message });
+    }
+});
+
+export default adminRouter;
