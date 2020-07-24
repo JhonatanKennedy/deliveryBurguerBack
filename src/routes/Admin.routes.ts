@@ -14,15 +14,18 @@ import DeleteUserService from '../services/admin/DeleteUserService';
 import CreateCategoryService from '../services/admin/CreateCategoryService';
 import ShowCategoryService from '../services/shared/ShowCategoryService';
 import ChangeCategoryService from '../services/admin/ChangeCategoryService';
+import UpdatePhotoService from '../services/admin/UpdatePhotoService';
 
 
 
 import multer from 'multer';
 import uploadConfig from '../config/upolad';
+import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 
 const adminRouter = Router();
 const upload = multer(uploadConfig);
-//, upload.single('product')
+
+upload.single('product')
 
 adminRouter.post('/product', async (request, response) => {
     try{
@@ -193,6 +196,21 @@ adminRouter.put('/category', async (request,response) => {
         return response.status(200).json({ message: 'Categoria editada com sucesso!' });
     } catch ( err ) {
         return response.status(400).json({err: err.message});
+    }
+});
+
+adminRouter.patch('/photo', upload.single('photo'), async (request, response) => {
+    try {
+        const { product_id } = request.body;
+
+        const updatePhoto = new UpdatePhotoService();
+        const product = await updatePhoto.execute({
+            product_id,
+            photoFilename: request.file.filename,
+        });
+        return response.status(200).json(product);
+    } catch ( err ) {
+        return response.status(400).json({ err: err.message });
     }
 });
 

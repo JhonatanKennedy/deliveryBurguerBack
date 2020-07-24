@@ -34,6 +34,7 @@ export class CreateProduct1595352933230 implements MigrationInterface {
                     {
                         name: 'photo',
                         type: 'varchar',
+                        isNullable:true
                     }
                 ]
             })
