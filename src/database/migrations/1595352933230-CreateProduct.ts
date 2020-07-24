@@ -1,12 +1,12 @@
 import {MigrationInterface, QueryRunner, Table, TableForeignKey} from "typeorm";
 
-export class CreateAddress1594732984781 implements MigrationInterface {
+export class CreateProduct1595352933230 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
             new Table({
-                name: 'address',
-                columns:[
+                name: 'products',
+                columns: [
                     {
                         name: 'id',
                         type: 'uuid',
@@ -15,47 +15,43 @@ export class CreateAddress1594732984781 implements MigrationInterface {
                         default: 'uuid_generate_v4()'
                     },
                     {
-                        name: 'title',
+                        name: 'name',
                         type: 'varchar',
-                        isNullable: false
                     },
                     {
-                        name: 'street',
+                        name: 'price',
+                        type: 'float',
+                    },
+                    {
+                        name: 'description',
                         type: 'varchar',
-                        isNullable: false
                     },
                     {
-                        name: 'number',
-                        type: 'int',
-                        isNullable: false
-                    },
-                    {
-                        name: 'additional',
-                        type: 'varchar',
-                        isNullable: false
-                    },
-                    {
-                        name: 'user_id',
+                        name:'category_id',
                         type: 'uuid',
                         isNullable: true
+                    },
+                    {
+                        name: 'photo',
+                        type: 'varchar',
                     }
                 ]
             })
         );
-
-        await queryRunner.createForeignKey('address', new TableForeignKey({
-            name: 'UserAddress',
-            columnNames: ['user_id'],
+        
+        await queryRunner.createForeignKey('products', new TableForeignKey({
+            name: 'categoryId',
+            columnNames: ['category_id'],
             referencedColumnNames: ['id'],
-            referencedTableName: 'users',
+            referencedTableName: 'category',
             onDelete: 'SET NULL',
             onUpdate: 'CASCADE'
         }));
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropForeignKey('address','UserAddress');
-        await queryRunner.dropTable('address')
+        await queryRunner.dropForeignKey('products','categoryId');
+        await queryRunner.dropTable('products');
     }
 
 }

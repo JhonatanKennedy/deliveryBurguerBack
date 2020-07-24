@@ -6,7 +6,11 @@ import ChangeAddressService from '../services/user/ChangeAddressService'
 import DeleteAddressService from '../services/user/DeleteAddressService';
 import ShowProductsService from '../services/shared/ShowProductsService';
 import ShowExtraService from '../services/shared/ShowExtraService';
+import CreateCheckoutService from '../services/user/CreateCheckoutService';
+import ShowCheckoutService from '../services/user/ShowCheckoutService';
+
 import ensureAuthentication from '../middlewares/ensureAuthenticated';
+
 
 const userRouter = Router();
 
@@ -29,8 +33,9 @@ userRouter.post('/', async (request,response)=>{
 
 userRouter.get('/products', async (request, response) => {
     try {
+        const data = request.body;
         const showProducts = new ShowProductsService();
-        const products = await showProducts.execute();
+        const products = await showProducts.execute(data);
         
         return response.send(products);
     } catch ( err ) {
@@ -40,8 +45,9 @@ userRouter.get('/products', async (request, response) => {
 
 userRouter.get('/extras', async (request, response) => {
     try {
+        const data = request.body;
         const showExtras = new ShowExtraService();
-        const extras = await showExtras.execute();
+        const extras = await showExtras.execute(data);
 
         return response.send(extras);
     } catch ( err ) {
@@ -96,6 +102,29 @@ userRouter.put('/address', ensureAuthentication, async (request,response) => {
 
         return response.send({ message: 'Endereço editado com sucesso!'});
 
+    } catch ( err ) {
+        return response.status(400).json({ err: err.message });
+    }
+});
+
+userRouter.post('/checkout', async (request,response) => {
+    try {
+        const data = request.body;
+        const createCheckout = new CreateCheckoutService();
+        await createCheckout.execute(data);
+        return response.status(200).json({message: 'Pedido Realizado com sucesso!'});
+    }catch ( err ) {
+        return response.status(400).json({ err: err.message });
+    }
+});
+
+userRouter.get('/checkout', async (request,response) => {
+    try {
+        const data = request.body;
+        const showCheckout = new ShowCheckoutService();
+        const history = await showCheckout.execute(data);
+        
+        return response.send(history);
     } catch ( err ) {
         return response.status(400).json({ err: err.message });
     }

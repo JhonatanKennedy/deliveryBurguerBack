@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import Category from './Category';
 
 @Entity('extras')
 class Extra {
@@ -10,6 +11,13 @@ class Extra {
 
     @Column('float')
     price: number;
+
+    @Column('varchar')
+    category_id:string;
+
+    @ManyToOne(() => Category)
+    @JoinColumn({name: 'category_id'})
+    extras: Category;
     
 }
 

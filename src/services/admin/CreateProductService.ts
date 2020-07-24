@@ -5,18 +5,20 @@ interface Request{
     name: string;
     price: number;
     description:string;
+    category_id:string;
     photo: string;
 }
 
 class CreateProductService {
 
-    public async execute({ name, price, description, photo }: Request): Promise<Product>{
+    public async execute({ name, price, description, category_id, photo }: Request): Promise<Product>{
         const productsRepository = getRepository(Product);
 
         const product = productsRepository.create({
             name,
             price,
             description,
+            category_id,
             photo
         });
 

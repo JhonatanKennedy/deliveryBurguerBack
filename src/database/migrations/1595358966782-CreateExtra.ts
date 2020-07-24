@@ -1,6 +1,6 @@
-import {MigrationInterface, QueryRunner, Table} from "typeorm";
+import {MigrationInterface, QueryRunner, TableForeignKey, Table } from "typeorm";
 
-export class CreateExtras1594406322059 implements MigrationInterface {
+export class CreateExtra1595358966782 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
@@ -17,20 +17,31 @@ export class CreateExtras1594406322059 implements MigrationInterface {
                     {
                         name: 'name',
                         type: 'varchar',
-                        isNullable: false
                     },
                     {
                         name: 'price',
                         type: 'float',
-                        isNullable: false
+                    },
+                    {
+                        name:'category_id',
+                        type:'uuid',
+                        isNullable: true
                     }
                 ]
             })
         );
+        await queryRunner.createForeignKey('extras', new TableForeignKey({
+            name: 'categoryId',
+            columnNames: ['category_id'],
+            referencedColumnNames: ['id'],
+            referencedTableName: 'category',
+            onDelete: 'SET NULL',
+            onUpdate: 'CASCADE'
+        }));
     }
-    
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.dropForeignKey('extras','categoryId');
         await queryRunner.dropTable('extras');
     }
 
