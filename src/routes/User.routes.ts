@@ -107,7 +107,7 @@ userRouter.put('/address', ensureAuthentication, async (request,response) => {
     }
 });
 
-userRouter.post('/checkout', async (request,response) => {
+userRouter.post('/checkout', ensureAuthentication, async (request,response) => {
     try {
         const data = request.body;
         const createCheckout = new CreateCheckoutService();
@@ -118,7 +118,7 @@ userRouter.post('/checkout', async (request,response) => {
     }
 });
 
-userRouter.get('/checkout', async (request,response) => {
+userRouter.get('/checkout', ensureAuthentication, async (request,response) => {
     try {
         const data = request.body;
         const showCheckout = new ShowCheckoutService();

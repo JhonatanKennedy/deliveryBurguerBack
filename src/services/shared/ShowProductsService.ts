@@ -2,17 +2,21 @@ import { getRepository } from 'typeorm';
 import Product from '../../models/Product';
 
 interface Request {
-    category_id: string;
+    name: string;
 }
 
 class ShowProductService {
 
-    public async execute({category_id}: Request): Promise<Product[]>{
+    public async execute({name}: Request): Promise<Product[]>{
         const productsRepository = getRepository(Product);
         
-        return await productsRepository.find({
-            where: {category_id}
-        });
+        if(name){
+            return await productsRepository.find({
+                where: {name}
+            });
+        }else{
+            return await productsRepository.find();
+        }
     }
 }   
 

@@ -20,6 +20,9 @@ class Checkout {
     @Column('bool')
     inProgress: Boolean;
 
+    @Column('int')
+    estimated_time:number;
+
     @CreateDateColumn()
     created_at: Date;
 

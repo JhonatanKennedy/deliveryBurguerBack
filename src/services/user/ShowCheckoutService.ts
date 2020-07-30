@@ -29,10 +29,11 @@ class ShowCheckoutService {
             const items = await itemsRepository.find({
                 where: {id_checkout}
             });
-            const address = await addressRepository.find({
+            const address = await addressRepository.findOne({
                 where: {id:id_address}
             });
-            history.push({items,address})
+
+            history.push({checkout,items,address})
         }
         return history;
 

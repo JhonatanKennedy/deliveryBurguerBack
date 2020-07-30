@@ -23,7 +23,6 @@ class UpdatePhotoService {
         if (product.photo){
             const productPhotoFilePath = path.join(uploadConfig.directory,product.photo);
             const productPhotoFileExists = await fs.promises.stat(productPhotoFilePath);
-
             if(productPhotoFileExists) {
                 await fs.promises.unlink(productPhotoFilePath);
             }

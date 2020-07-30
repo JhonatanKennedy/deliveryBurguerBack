@@ -6,19 +6,21 @@ interface Request {
     id_user:string;
     id_address: string;
     inProgress:Boolean;
+    estimated_time: number;
     items: Item[];
 }
 
 
 class CreateCheckoutService {
-    public async execute ({ id_user, id_address, inProgress, items}: Request): Promise<any> {
+    public async execute ({ id_user, id_address, inProgress, estimated_time, items}: Request): Promise<any> {
         const checkoutRepository = getRepository(Checkout);
         const itemRepository = getRepository(Item);
 
         const newCheckout = checkoutRepository.create({
             id_user,
             id_address,
-            inProgress
+            inProgress,
+            estimated_time
         });
 
         await checkoutRepository.save(newCheckout);

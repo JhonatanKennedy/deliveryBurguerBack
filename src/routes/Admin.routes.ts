@@ -20,7 +20,7 @@ import UpdatePhotoService from '../services/admin/UpdatePhotoService';
 
 import multer from 'multer';
 import uploadConfig from '../config/upolad';
-import ensureAuthenticated from '../middlewares/ensureAuthenticated';
+
 
 const adminRouter = Router();
 const upload = multer(uploadConfig);
@@ -30,11 +30,10 @@ upload.single('product')
 adminRouter.post('/product', async (request, response) => {
     try{
         const data: Omit<Product,'id'> = request.body;
-        //data.photo = request.file.path;
         const createProduct = new CreateProductService();
         
         const product = await createProduct.execute(data);
-    
+
         return response.send(product);
     } catch ( err ){
         return response.status(400).json({error: err.message});
@@ -69,13 +68,11 @@ adminRouter.put('/product', async (request, response) => {
 
 });
 
-adminRouter.delete('/product', async (request,response) => {
+adminRouter.delete('/product/:id', async (request,response) => {
     try {
-        const id = request.body;
-
+        const {id} = request.params;
         const deleteProduct = new DeleteProductService();
-    
-        await deleteProduct.execute(id);
+        await deleteProduct.execute({id});
 
         return response.status(200).json({message: 'Produto deletado'});
     } catch ( err ) {
@@ -180,7 +177,6 @@ adminRouter.get('/category', async (request,response) => {
     try {
         const showCategory = new ShowCategoryService();
         const categories = await showCategory.execute();
-
         return response.send(categories);
     } catch( err ) {
         return response.status(400).json({ err: err.message });
@@ -202,7 +198,6 @@ adminRouter.put('/category', async (request,response) => {
 adminRouter.patch('/photo', upload.single('photo'), async (request, response) => {
     try {
         const { product_id } = request.body;
-
         const updatePhoto = new UpdatePhotoService();
         const product = await updatePhoto.execute({
             product_id,

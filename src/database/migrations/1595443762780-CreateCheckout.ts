@@ -26,6 +26,11 @@ export class CreateCheckout1595443762780 implements MigrationInterface {
                     type: 'bool'
                 },
                 {
+                    name:'estimated_time',
+                    type:'int',
+                    isNullable: true
+                },
+                {
                     name: 'created_at',
                     type: 'timestamp',
                     default: 'now()'

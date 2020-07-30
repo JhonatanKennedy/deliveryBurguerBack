@@ -11,11 +11,11 @@ interface Request{
 
 class ChangeProductService {
 
-    public async execute({ id, name, price, description, photo }: Request): Promise<void> {
+    public async execute({ id, name, price, description }: Request): Promise<void> {
         const productsRepository = getRepository(Product)
         
         await productsRepository.update(
-            { id }, { name, price, description, photo }
+            { id }, { name, price, description }
         );
     }
 }   
